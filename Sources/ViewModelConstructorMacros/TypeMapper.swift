@@ -44,7 +44,7 @@ enum TypeMapper {
             case "Float": return ".float"
             case "Bool": return ".bool"
             case "Date": return ".date"
-            case "Color": return ".color"
+            case "Color", "UIColor": return ".color"
             default:
                 break
             }
