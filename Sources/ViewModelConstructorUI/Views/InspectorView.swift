@@ -149,7 +149,6 @@ private struct NestedPropertyView: View {
         .onAppear {
             // Extract current nested values
             if let nestedVM = parentValues[name] {
-                let descriptors = nestedType.propertyDescriptors
                 // Try to get allPropertyValues from the nested ViewModel
                 if let constructable = nestedVM as? any ViewModelConstructable {
                     nestedValues = constructable.allPropertyValues
@@ -157,7 +156,6 @@ private struct NestedPropertyView: View {
                     // Initialize from defaults
                     let defaultVM = nestedType.makeDefault()
                     nestedValues = defaultVM.allPropertyValues
-                    _ = descriptors // suppress warning
                 }
             } else {
                 let defaultVM = nestedType.makeDefault()
