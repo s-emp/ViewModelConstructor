@@ -3,5 +3,7 @@ import SwiftSyntaxMacros
 
 @main
 struct ViewModelConstructorPlugin: CompilerPlugin {
-    let providingMacros: [Macro.Type] = []
+    let providingMacros: [Macro.Type] = [
+        ViewModelConstructorMacro.self,
+    ]
 }
