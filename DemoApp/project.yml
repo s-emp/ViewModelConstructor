@@ -1,0 +1,30 @@
+name: DemoApp
+options:
+  bundleIdPrefix: com.viewmodelconstructor
+  deploymentTarget:
+    iOS: "17.0"
+
+packages:
+  ViewModelConstructor:
+    path: ../
+
+targets:
+  DemoApp:
+    type: application
+    platform: iOS
+    sources:
+      - DemoApp
+    dependencies:
+      - package: ViewModelConstructor
+        product: ViewModelConstructorCore
+      - package: ViewModelConstructor
+        product: ViewModelConstructorUI
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown"
+        SWIFT_VERSION: "6.0"
+        SWIFT_STRICT_CONCURRENCY: minimal
