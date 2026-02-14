@@ -62,4 +62,22 @@ struct FloatInputView: View {
         }
     }
 }
+
+#Preview("Int Input") {
+    @Previewable @State var value: any Sendable = 42
+    IntInputView(label: "Count", value: $value)
+        .padding()
+}
+
+#Preview("Double Input") {
+    @Previewable @State var value: any Sendable = 3.14
+    DoubleInputView(label: "Opacity", value: $value)
+        .padding()
+}
+
+#Preview("Float Input") {
+    @Previewable @State var value: any Sendable = Float(1.5)
+    FloatInputView(label: "Scale", value: $value)
+        .padding()
+}
 #endif
