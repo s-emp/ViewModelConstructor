@@ -45,4 +45,18 @@ struct DeviceFrameView<Content: View>: View {
         }
     }
 }
+
+#Preview {
+    DeviceFrameView(deviceSize: .iPhone15, backgroundColor: .white) {
+        VStack(spacing: 12) {
+            Text("Sample Component")
+                .font(.headline)
+            Text("This is how content looks inside the device frame")
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+        }
+        .padding()
+    }
+}
 #endif
