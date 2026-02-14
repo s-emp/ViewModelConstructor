@@ -3,13 +3,16 @@ import ViewModelConstructorCore
 
 @ViewModelConstructor
 struct MyButtonViewModel {
-    var value: String
-    var backgroundColor: UIColor
-    var corners: Double
-    var topInset: Double
-    var bottomInset: Double
-    var leftInset: Double
-    var rightInset: Double
+    let value: String
+    let backgroundColor: UIColor
+    let corners: Double
+    let topInset: Double
+    let bottomInset: Double
+    let leftInset: Double
+    let rightInset: Double
+    let isEnabled: Bool
+    var action: (@MainActor @Sendable () -> Void)?
+    var dynamicInset: DynamicInset
 
     init() {
         self.value = "Tap Me"
@@ -19,6 +22,23 @@ struct MyButtonViewModel {
         self.bottomInset = 8
         self.leftInset = 16
         self.rightInset = 16
+        self.isEnabled = true
+        self.dynamicInset = DynamicInset()
+    }
+    
+    @ViewModelConstructor
+    struct DynamicInset {
+        let topInset: Double
+        let bottomInset: Double
+        let leftInset: Double
+        let rightInset: Double
+        
+        init() {
+            self.topInset = 0
+            self.bottomInset = 0
+            self.leftInset = 0
+            self.rightInset = 0
+        }
     }
 }
 
@@ -30,11 +50,13 @@ final class MyButtonView: UIView, ViewModelConfigurable {
     private var bottomConstraint: NSLayoutConstraint!
     private var leadingConstraint: NSLayoutConstraint!
     private var trailingConstraint: NSLayoutConstraint!
+    private var actionHandler: (@MainActor @Sendable () -> Void)?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         button.translatesAutoresizingMaskIntoConstraints = false
         addSubview(button)
+        button.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
 
         topConstraint = button.topAnchor.constraint(equalTo: topAnchor)
         bottomConstraint = button.bottomAnchor.constraint(equalTo: bottomAnchor)
@@ -46,6 +68,11 @@ final class MyButtonView: UIView, ViewModelConfigurable {
     @available(*, unavailable)
     required init?(coder: NSCoder) { fatalError() }
 
+    @objc private func handleTap() {
+        // The action is stored on the view model when configured; invoke if present.
+        actionHandler?()
+    }
+
     func configure(with viewModel: MyButtonViewModel) {
         button.setTitle(viewModel.value, for: .normal)
         button.backgroundColor = viewModel.backgroundColor
@@ -56,5 +83,7 @@ final class MyButtonView: UIView, ViewModelConfigurable {
         bottomConstraint.constant = -viewModel.bottomInset
         leadingConstraint.constant = viewModel.leftInset
         trailingConstraint.constant = -viewModel.rightInset
+        button.isEnabled = viewModel.isEnabled
+        actionHandler = viewModel.action
     }
 }

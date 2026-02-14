@@ -70,6 +70,12 @@ private struct PropertyRow: View {
                 nestedType: nestedType,
                 values: $values
             )
+        case .custom(let type) where type is any ViewModelConstructable.Type:
+            NestedNavigationRow(
+                descriptor: descriptor,
+                nestedType: type as! any ViewModelConstructable.Type,
+                values: $values
+            )
         default:
             Section(descriptor.name) {
                 PropertyInputFactory.makeInput(
@@ -93,6 +99,8 @@ private struct PropertyRow: View {
         case .enumType(_, let cases): return cases.first ?? ""
         case .optional: return Optional<any Sendable>.none as any Sendable
         case .array: return [any Sendable]()
+        case .custom(let type) where type is any ViewModelConstructable.Type:
+            return (type as! any ViewModelConstructable.Type).makeDefault()
         default: return ""
         }
     }
