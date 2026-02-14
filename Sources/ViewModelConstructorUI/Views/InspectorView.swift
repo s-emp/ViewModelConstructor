@@ -1,5 +1,6 @@
 #if canImport(UIKit)
 import SwiftUI
+import UIKit
 import ViewModelConstructorCore
 
 struct InspectorView<Category: ConstructorCategory>: View {
@@ -90,7 +91,7 @@ private struct PropertyRow: View {
         case .date: return Date()
         case .color: return UIColor.black
         case .enumType(_, let cases): return cases.first ?? ""
-        case .optional: return Optional<Any>.none as any Sendable
+        case .optional: return Optional<any Sendable>.none as any Sendable
         case .array: return [any Sendable]()
         default: return ""
         }
@@ -163,5 +164,48 @@ private struct NestedPropertyView: View {
             }
         }
     }
+}
+
+#if DEBUG
+private enum PreviewCategory: String, ConstructorCategory {
+    case controls = "Controls"
+    case layout = "Layout"
+}
+
+@MainActor
+private func makePreviewStore() -> ConstructorStore<PreviewCategory> {
+    let store = ConstructorStore<PreviewCategory>()
+    let reg = ComponentRegistration(
+        name: "SampleButton",
+        categoryRawValue: PreviewCategory.controls.rawValue,
+        propertyDescriptors: [
+            PropertyDescriptor(name: "title", typeInfo: .string, isOptional: false),
+            PropertyDescriptor(name: "isEnabled", typeInfo: .bool, isOptional: false),
+            PropertyDescriptor(name: "cornerRadius", typeInfo: .double, isOptional: false),
+            PropertyDescriptor(name: "textColor", typeInfo: .color, isOptional: false),
+            PropertyDescriptor(name: "subtitle", typeInfo: .optional(wrapped: .string), isOptional: true),
+        ],
+        createView: { UIView() },
+        createDefaultViewModel: {
+            [
+                "title": "Tap Me",
+                "isEnabled": true,
+                "cornerRadius": 8.0,
+                "textColor": UIColor.label,
+                "subtitle": Optional<any Sendable>.none as any Sendable,
+            ] as [String: any Sendable]
+        },
+        allPropertyValues: { vm in vm as? [String: any Sendable] ?? [:] },
+        constructFromValues: { $0 },
+        configureView: { _, _ in }
+    )
+    store.registrations.append(reg)
+    store.select(reg)
+    return store
+}
+#endif
+
+#Preview {
+    InspectorView(store: makePreviewStore())
 }
 #endif

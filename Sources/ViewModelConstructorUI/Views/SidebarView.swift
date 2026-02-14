@@ -1,5 +1,6 @@
 #if canImport(UIKit)
 import SwiftUI
+import UIKit
 import ViewModelConstructorCore
 
 struct SidebarView<Category: ConstructorCategory>: View {
@@ -48,6 +49,64 @@ struct SidebarView<Category: ConstructorCategory>: View {
             guard !filtered.isEmpty else { return nil }
             return (category: group.category, registrations: filtered)
         }
+    }
+}
+
+#if DEBUG
+private enum PreviewCategory: String, ConstructorCategory {
+    case controls = "Controls"
+    case layout = "Layout"
+}
+
+@MainActor
+private func makePreviewStore() -> ConstructorStore<PreviewCategory> {
+    let store = ConstructorStore<PreviewCategory>()
+    store.registrations.append(ComponentRegistration(
+        name: "PrimaryButton",
+        categoryRawValue: PreviewCategory.controls.rawValue,
+        propertyDescriptors: [
+            PropertyDescriptor(name: "title", typeInfo: .string, isOptional: false),
+            PropertyDescriptor(name: "isEnabled", typeInfo: .bool, isOptional: false),
+        ],
+        createView: { UIView() },
+        createDefaultViewModel: { ["title": "Tap", "isEnabled": true] as [String: any Sendable] },
+        allPropertyValues: { vm in vm as? [String: any Sendable] ?? [:] },
+        constructFromValues: { $0 },
+        configureView: { _, _ in }
+    ))
+    store.registrations.append(ComponentRegistration(
+        name: "IconButton",
+        categoryRawValue: PreviewCategory.controls.rawValue,
+        propertyDescriptors: [
+            PropertyDescriptor(name: "iconName", typeInfo: .string, isOptional: false),
+        ],
+        createView: { UIView() },
+        createDefaultViewModel: { ["iconName": "star"] as [String: any Sendable] },
+        allPropertyValues: { vm in vm as? [String: any Sendable] ?? [:] },
+        constructFromValues: { $0 },
+        configureView: { _, _ in }
+    ))
+    store.registrations.append(ComponentRegistration(
+        name: "CardView",
+        categoryRawValue: PreviewCategory.layout.rawValue,
+        propertyDescriptors: [
+            PropertyDescriptor(name: "padding", typeInfo: .double, isOptional: false),
+        ],
+        createView: { UIView() },
+        createDefaultViewModel: { ["padding": 16.0] as [String: any Sendable] },
+        allPropertyValues: { vm in vm as? [String: any Sendable] ?? [:] },
+        constructFromValues: { $0 },
+        configureView: { _, _ in }
+    ))
+    return store
+}
+#endif
+
+#Preview {
+    NavigationSplitView {
+        SidebarView(store: makePreviewStore())
+    } detail: {
+        Text("Detail")
     }
 }
 #endif

@@ -1,5 +1,6 @@
 #if canImport(UIKit)
 import SwiftUI
+import UIKit
 import ViewModelConstructorCore
 
 struct PreviewView<Category: ConstructorCategory>: View {
@@ -79,5 +80,40 @@ struct PreviewView<Category: ConstructorCategory>: View {
             Spacer()
         }
     }
+}
+
+#if DEBUG
+private enum PreviewCategory: String, ConstructorCategory {
+    case controls = "Controls"
+}
+
+@MainActor
+private func makePreviewStore() -> ConstructorStore<PreviewCategory> {
+    let store = ConstructorStore<PreviewCategory>()
+    let reg = ComponentRegistration(
+        name: "SampleButton",
+        categoryRawValue: PreviewCategory.controls.rawValue,
+        propertyDescriptors: [
+            PropertyDescriptor(name: "title", typeInfo: .string, isOptional: false),
+        ],
+        createView: {
+            let label = UILabel()
+            label.text = "Preview Component"
+            label.textAlignment = .center
+            return label
+        },
+        createDefaultViewModel: { ["title": "Tap Me"] as [String: any Sendable] },
+        allPropertyValues: { vm in vm as? [String: any Sendable] ?? [:] },
+        constructFromValues: { $0 },
+        configureView: { _, _ in }
+    )
+    store.registrations.append(reg)
+    store.select(reg)
+    return store
+}
+#endif
+
+#Preview {
+    PreviewView(store: makePreviewStore())
 }
 #endif
