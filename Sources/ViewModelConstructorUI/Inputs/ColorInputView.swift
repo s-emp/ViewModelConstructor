@@ -20,4 +20,10 @@ struct ColorInputView: View {
         ColorPicker(label, selection: binding)
     }
 }
+
+#Preview {
+    @Previewable @State var value: any Sendable = UIColor.systemBlue
+    ColorInputView(label: "Background Color", value: $value)
+        .padding()
+}
 #endif

@@ -15,4 +15,10 @@ struct StringInputView: View {
             .textFieldStyle(.roundedBorder)
     }
 }
+
+#Preview {
+    @Previewable @State var value: any Sendable = "Hello, World!"
+    StringInputView(label: "Title", value: $value)
+        .padding()
+}
 #endif

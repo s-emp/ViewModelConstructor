@@ -14,4 +14,10 @@ struct BoolInputView: View {
         Toggle(label, isOn: binding)
     }
 }
+
+#Preview {
+    @Previewable @State var value: any Sendable = true
+    BoolInputView(label: "Is Enabled", value: $value)
+        .padding()
+}
 #endif

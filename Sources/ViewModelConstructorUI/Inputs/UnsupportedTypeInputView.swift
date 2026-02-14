@@ -16,4 +16,9 @@ struct UnsupportedTypeInputView: View {
         }
     }
 }
+
+#Preview {
+    UnsupportedTypeInputView(label: "metadata", typeName: "CustomComplexType")
+        .padding()
+}
 #endif

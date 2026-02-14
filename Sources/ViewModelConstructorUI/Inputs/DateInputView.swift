@@ -14,4 +14,10 @@ struct DateInputView: View {
         DatePicker(label, selection: binding)
     }
 }
+
+#Preview {
+    @Previewable @State var value: any Sendable = Date()
+    DateInputView(label: "Created At", value: $value)
+        .padding()
+}
 #endif
