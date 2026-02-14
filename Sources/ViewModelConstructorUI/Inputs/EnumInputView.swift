@@ -19,4 +19,14 @@ struct EnumInputView: View {
         }
     }
 }
+
+#Preview {
+    @Previewable @State var value: any Sendable = "primary"
+    EnumInputView(
+        label: "Style",
+        cases: ["primary", "secondary", "destructive"],
+        value: $value
+    )
+    .padding()
+}
 #endif

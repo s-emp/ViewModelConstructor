@@ -74,4 +74,14 @@ struct ArrayInputView: View {
         }
     }
 }
+
+#Preview {
+    @Previewable @State var value: any Sendable = ["Item 1", "Item 2"] as [any Sendable]
+    ArrayInputView(
+        label: "Tags",
+        elementTypeInfo: .string,
+        value: $value
+    )
+    .padding()
+}
 #endif

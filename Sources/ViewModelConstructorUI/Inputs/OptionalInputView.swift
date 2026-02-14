@@ -14,7 +14,7 @@ struct OptionalInputView: View {
             Toggle("\(label) (optional)", isOn: $isNonNil)
                 .onChange(of: isNonNil) { _, newValue in
                     if !newValue {
-                        value = Optional<Any>.none as any Sendable
+                        value = Optional<any Sendable>.none as any Sendable
                     } else {
                         value = defaultValue(for: wrappedTypeInfo)
                     }
@@ -55,5 +55,15 @@ struct OptionalInputView: View {
         default: return ""
         }
     }
+}
+
+#Preview {
+    @Previewable @State var value: any Sendable = Optional("Optional value") as any Sendable
+    OptionalInputView(
+        label: "Subtitle",
+        wrappedTypeInfo: .string,
+        value: $value
+    )
+    .padding()
 }
 #endif
