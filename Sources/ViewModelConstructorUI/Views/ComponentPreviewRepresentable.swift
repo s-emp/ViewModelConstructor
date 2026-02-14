@@ -22,6 +22,7 @@ struct ComponentPreviewRepresentable: UIViewRepresentable {
             componentView.topAnchor.constraint(equalTo: containerView.topAnchor),
             componentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
             componentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            componentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
         ])
 
         // Configure with current values
@@ -35,13 +36,28 @@ struct ComponentPreviewRepresentable: UIViewRepresentable {
         }
 
         context.coordinator.componentView = componentView
+        context.coordinator.lastRegistrationID = registration.id
         return containerView
     }
 
+    func sizeThatFits(_ proposal: ProposedViewSize, uiView: UIView, context: Context) -> CGSize? {
+        let width = proposal.width ?? UIView.layoutFittingCompressedSize.width
+        let targetSize = CGSize(width: width, height: UIView.layoutFittingCompressedSize.height)
+        let fittingSize = uiView.systemLayoutSizeFitting(
+            targetSize,
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        return CGSize(width: max(fittingSize.width, 1), height: max(fittingSize.height, 1))
+    }
+
     func updateUIView(_ containerView: UIView, context: Context) {
-        // If updateTrigger changed, recreate the component
-        if context.coordinator.lastTrigger != updateTrigger {
+        let needsRecreate = context.coordinator.lastTrigger != updateTrigger
+            || context.coordinator.lastRegistrationID != registration.id
+
+        if needsRecreate {
             context.coordinator.lastTrigger = updateTrigger
+            context.coordinator.lastRegistrationID = registration.id
 
             // Remove old component
             context.coordinator.componentView?.removeFromSuperview()
@@ -54,6 +70,7 @@ struct ComponentPreviewRepresentable: UIViewRepresentable {
                 componentView.topAnchor.constraint(equalTo: containerView.topAnchor),
                 componentView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
                 componentView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                componentView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
             ])
 
             context.coordinator.componentView = componentView
@@ -76,6 +93,7 @@ struct ComponentPreviewRepresentable: UIViewRepresentable {
     class Coordinator {
         var componentView: UIView?
         var lastTrigger: UUID = UUID()
+        var lastRegistrationID: UUID?
     }
 }
 #endif
