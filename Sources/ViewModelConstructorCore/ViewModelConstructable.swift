@@ -1,4 +1,4 @@
-public protocol ViewModelConstructable {
+public protocol ViewModelConstructable: Sendable {
     static func makeDefault() -> Self
     static var propertyDescriptors: [PropertyDescriptor] { get }
     var allPropertyValues: [String: any Sendable] { get }

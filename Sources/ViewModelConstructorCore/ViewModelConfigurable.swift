@@ -1,3 +1,4 @@
+@MainActor
 public protocol ViewModelConfigurable {
     associatedtype ViewModel
 
